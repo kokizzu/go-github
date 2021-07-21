@@ -9,8 +9,9 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"reflect"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestMarketplaceService_ListPlans(t *testing.T) {
@@ -35,7 +36,7 @@ func TestMarketplaceService_ListPlans(t *testing.T) {
 	}
 
 	want := []*MarketplacePlan{{ID: Int64(1)}}
-	if !reflect.DeepEqual(plans, want) {
+	if !cmp.Equal(plans, want) {
 		t.Errorf("Marketplace.ListPlans returned %+v, want %+v", plans, want)
 	}
 
@@ -67,7 +68,7 @@ func TestMarketplaceService_Stubbed_ListPlans(t *testing.T) {
 	}
 
 	want := []*MarketplacePlan{{ID: Int64(1)}}
-	if !reflect.DeepEqual(plans, want) {
+	if !cmp.Equal(plans, want) {
 		t.Errorf("Marketplace.ListPlans (Stubbed) returned %+v, want %+v", plans, want)
 	}
 }
@@ -90,7 +91,7 @@ func TestMarketplaceService_ListPlanAccountsForPlan(t *testing.T) {
 	}
 
 	want := []*MarketplacePlanAccount{{ID: Int64(1)}}
-	if !reflect.DeepEqual(accounts, want) {
+	if !cmp.Equal(accounts, want) {
 		t.Errorf("Marketplace.ListPlanAccountsForPlan returned %+v, want %+v", accounts, want)
 	}
 
@@ -122,7 +123,7 @@ func TestMarketplaceService_Stubbed_ListPlanAccountsForPlan(t *testing.T) {
 	}
 
 	want := []*MarketplacePlanAccount{{ID: Int64(1)}}
-	if !reflect.DeepEqual(accounts, want) {
+	if !cmp.Equal(accounts, want) {
 		t.Errorf("Marketplace.ListPlanAccountsForPlan (Stubbed) returned %+v, want %+v", accounts, want)
 	}
 }
@@ -144,7 +145,7 @@ func TestMarketplaceService_GetPlanAccountForAccount(t *testing.T) {
 	}
 
 	want := &MarketplacePlanAccount{ID: Int64(1), MarketplacePendingChange: &MarketplacePendingChange{ID: Int64(77)}}
-	if !reflect.DeepEqual(account, want) {
+	if !cmp.Equal(account, want) {
 		t.Errorf("Marketplace.GetPlanAccountForAccount returned %+v, want %+v", account, want)
 	}
 
@@ -175,7 +176,7 @@ func TestMarketplaceService_Stubbed_GetPlanAccountForAccount(t *testing.T) {
 	}
 
 	want := &MarketplacePlanAccount{ID: Int64(1)}
-	if !reflect.DeepEqual(account, want) {
+	if !cmp.Equal(account, want) {
 		t.Errorf("Marketplace.GetPlanAccountForAccount (Stubbed) returned %+v, want %+v", account, want)
 	}
 }
@@ -198,7 +199,7 @@ func TestMarketplaceService_ListMarketplacePurchasesForUser(t *testing.T) {
 	}
 
 	want := []*MarketplacePurchase{{BillingCycle: String("monthly")}}
-	if !reflect.DeepEqual(purchases, want) {
+	if !cmp.Equal(purchases, want) {
 		t.Errorf("Marketplace.ListMarketplacePurchasesForUser returned %+v, want %+v", purchases, want)
 	}
 
@@ -230,7 +231,255 @@ func TestMarketplaceService_Stubbed_ListMarketplacePurchasesForUser(t *testing.T
 	}
 
 	want := []*MarketplacePurchase{{BillingCycle: String("monthly")}}
-	if !reflect.DeepEqual(purchases, want) {
+	if !cmp.Equal(purchases, want) {
 		t.Errorf("Marketplace.ListMarketplacePurchasesForUser returned %+v, want %+v", purchases, want)
 	}
+}
+
+func TestMarketplacePlan_Marshal(t *testing.T) {
+	testJSONMarshal(t, &MarketplacePlan{}, "{}")
+
+	u := &MarketplacePlan{
+		URL:                 String("u"),
+		AccountsURL:         String("au"),
+		ID:                  Int64(1),
+		Number:              Int(1),
+		Name:                String("n"),
+		Description:         String("d"),
+		MonthlyPriceInCents: Int(1),
+		YearlyPriceInCents:  Int(1),
+		PriceModel:          String("pm"),
+		UnitName:            String("un"),
+		Bullets:             &[]string{"b"},
+		State:               String("s"),
+		HasFreeTrial:        Bool(false),
+	}
+
+	want := `{
+		"url": "u",
+		"accounts_url": "au",
+		"id": 1,
+		"number": 1,
+		"name": "n",
+		"description": "d",
+		"monthly_price_in_cents": 1,
+		"yearly_price_in_cents": 1,
+		"price_model": "pm",
+		"unit_name": "un",
+		"bullets": ["b"],
+		"state": "s",
+		"has_free_trial": false
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestMarketplacePurchase_Marshal(t *testing.T) {
+	testJSONMarshal(t, &MarketplacePurchase{}, "{}")
+
+	u := &MarketplacePurchase{
+		BillingCycle:    String("bc"),
+		NextBillingDate: &Timestamp{referenceTime},
+		UnitCount:       Int(1),
+		Plan: &MarketplacePlan{
+			URL:                 String("u"),
+			AccountsURL:         String("au"),
+			ID:                  Int64(1),
+			Number:              Int(1),
+			Name:                String("n"),
+			Description:         String("d"),
+			MonthlyPriceInCents: Int(1),
+			YearlyPriceInCents:  Int(1),
+			PriceModel:          String("pm"),
+			UnitName:            String("un"),
+			Bullets:             &[]string{"b"},
+			State:               String("s"),
+			HasFreeTrial:        Bool(false),
+		},
+		OnFreeTrial:     Bool(false),
+		FreeTrialEndsOn: &Timestamp{referenceTime},
+		UpdatedAt:       &Timestamp{referenceTime},
+	}
+
+	want := `{
+		"billing_cycle": "bc",
+		"next_billing_date": ` + referenceTimeStr + `,
+		"unit_count": 1,
+		"plan": {
+			"url": "u",
+			"accounts_url": "au",
+			"id": 1,
+			"number": 1,
+			"name": "n",
+			"description": "d",
+			"monthly_price_in_cents": 1,
+			"yearly_price_in_cents": 1,
+			"price_model": "pm",
+			"unit_name": "un",
+			"bullets": ["b"],
+			"state": "s",
+			"has_free_trial": false
+			},
+		"on_free_trial": false,
+		"free_trial_ends_on": ` + referenceTimeStr + `,
+		"updated_at": ` + referenceTimeStr + `
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestMarketplacePendingChange_Marshal(t *testing.T) {
+	testJSONMarshal(t, &MarketplacePendingChange{}, "{}")
+
+	u := &MarketplacePendingChange{
+		EffectiveDate: &Timestamp{referenceTime},
+		UnitCount:     Int(1),
+		ID:            Int64(1),
+		Plan: &MarketplacePlan{
+			URL:                 String("u"),
+			AccountsURL:         String("au"),
+			ID:                  Int64(1),
+			Number:              Int(1),
+			Name:                String("n"),
+			Description:         String("d"),
+			MonthlyPriceInCents: Int(1),
+			YearlyPriceInCents:  Int(1),
+			PriceModel:          String("pm"),
+			UnitName:            String("un"),
+			Bullets:             &[]string{"b"},
+			State:               String("s"),
+			HasFreeTrial:        Bool(false),
+		},
+	}
+
+	want := `{
+		"effective_date": ` + referenceTimeStr + `,
+		"unit_count": 1,
+		"id": 1,
+		"plan": {
+			"url": "u",
+			"accounts_url": "au",
+			"id": 1,
+			"number": 1,
+			"name": "n",
+			"description": "d",
+			"monthly_price_in_cents": 1,
+			"yearly_price_in_cents": 1,
+			"price_model": "pm",
+			"unit_name": "un",
+			"bullets": ["b"],
+			"state": "s",
+			"has_free_trial": false
+			}
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestMarketplacePlanAccount_Marshal(t *testing.T) {
+	testJSONMarshal(t, &MarketplacePlanAccount{}, "{}")
+
+	u := &MarketplacePlanAccount{
+		URL:                      String("u"),
+		Type:                     String("t"),
+		ID:                       Int64(1),
+		Login:                    String("l"),
+		OrganizationBillingEmail: String("obe"),
+		MarketplacePurchase: &MarketplacePurchase{
+			BillingCycle:    String("bc"),
+			NextBillingDate: &Timestamp{referenceTime},
+			UnitCount:       Int(1),
+			Plan: &MarketplacePlan{
+				URL:                 String("u"),
+				AccountsURL:         String("au"),
+				ID:                  Int64(1),
+				Number:              Int(1),
+				Name:                String("n"),
+				Description:         String("d"),
+				MonthlyPriceInCents: Int(1),
+				YearlyPriceInCents:  Int(1),
+				PriceModel:          String("pm"),
+				UnitName:            String("un"),
+				Bullets:             &[]string{"b"},
+				State:               String("s"),
+				HasFreeTrial:        Bool(false),
+			},
+			OnFreeTrial:     Bool(false),
+			FreeTrialEndsOn: &Timestamp{referenceTime},
+			UpdatedAt:       &Timestamp{referenceTime},
+		},
+		MarketplacePendingChange: &MarketplacePendingChange{
+			EffectiveDate: &Timestamp{referenceTime},
+			UnitCount:     Int(1),
+			ID:            Int64(1),
+			Plan: &MarketplacePlan{
+				URL:                 String("u"),
+				AccountsURL:         String("au"),
+				ID:                  Int64(1),
+				Number:              Int(1),
+				Name:                String("n"),
+				Description:         String("d"),
+				MonthlyPriceInCents: Int(1),
+				YearlyPriceInCents:  Int(1),
+				PriceModel:          String("pm"),
+				UnitName:            String("un"),
+				Bullets:             &[]string{"b"},
+				State:               String("s"),
+				HasFreeTrial:        Bool(false),
+			},
+		},
+	}
+
+	want := `{
+		"url": "u",
+		"type": "t",
+		"id": 1,
+		"login": "l",
+		"organization_billing_email": "obe",
+		"marketplace_purchase": {
+			"billing_cycle": "bc",
+			"next_billing_date": ` + referenceTimeStr + `,
+			"unit_count": 1,
+			"plan": {
+				"url": "u",
+				"accounts_url": "au",
+				"id": 1,
+				"number": 1,
+				"name": "n",
+				"description": "d",
+				"monthly_price_in_cents": 1,
+				"yearly_price_in_cents": 1,
+				"price_model": "pm",
+				"unit_name": "un",
+				"bullets": ["b"],
+				"state": "s",
+				"has_free_trial": false
+				},
+			"on_free_trial": false,
+			"free_trial_ends_on": ` + referenceTimeStr + `,
+			"updated_at": ` + referenceTimeStr + `
+		},
+		"marketplace_pending_change": {
+			"effective_date": ` + referenceTimeStr + `,
+			"unit_count": 1,
+			"id": 1,
+			"plan": {
+				"url": "u",
+				"accounts_url": "au",
+				"id": 1,
+				"number": 1,
+				"name": "n",
+				"description": "d",
+				"monthly_price_in_cents": 1,
+				"yearly_price_in_cents": 1,
+				"price_model": "pm",
+				"unit_name": "un",
+				"bullets": ["b"],
+				"state": "s",
+				"has_free_trial": false
+			}
+		}
+	}`
+
+	testJSONMarshal(t, u, want)
 }

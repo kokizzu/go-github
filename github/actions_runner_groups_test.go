@@ -9,8 +9,9 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"reflect"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestActionsService_ListOrganizationRunnerGroups(t *testing.T) {
@@ -38,7 +39,7 @@ func TestActionsService_ListOrganizationRunnerGroups(t *testing.T) {
 			{ID: Int64(3), Name: String("expensive-hardware"), Visibility: String("private"), Default: Bool(false), RunnersURL: String("https://api.github.com/orgs/octo-org/actions/runner_groups/3/runners"), Inherited: Bool(false), AllowsPublicRepositories: Bool(true)},
 		},
 	}
-	if !reflect.DeepEqual(groups, want) {
+	if !cmp.Equal(groups, want) {
 		t.Errorf("Actions.ListOrganizationRunnerGroups returned %+v, want %+v", groups, want)
 	}
 
@@ -83,7 +84,7 @@ func TestActionsService_GetOrganizationRunnerGroup(t *testing.T) {
 		AllowsPublicRepositories: Bool(true),
 	}
 
-	if !reflect.DeepEqual(group, want) {
+	if !cmp.Equal(group, want) {
 		t.Errorf("Actions.GetOrganizationRunnerGroup returned %+v, want %+v", group, want)
 	}
 
@@ -138,8 +139,9 @@ func TestActionsService_CreateOrganizationRunnerGroup(t *testing.T) {
 
 	ctx := context.Background()
 	req := CreateRunnerGroupRequest{
-		Name:       String("octo-runner-group"),
-		Visibility: String("selected"),
+		Name:                     String("octo-runner-group"),
+		Visibility:               String("selected"),
+		AllowsPublicRepositories: Bool(true),
 	}
 	group, _, err := client.Actions.CreateOrganizationRunnerGroup(ctx, "o", req)
 	if err != nil {
@@ -157,7 +159,7 @@ func TestActionsService_CreateOrganizationRunnerGroup(t *testing.T) {
 		AllowsPublicRepositories: Bool(true),
 	}
 
-	if !reflect.DeepEqual(group, want) {
+	if !cmp.Equal(group, want) {
 		t.Errorf("Actions.CreateOrganizationRunnerGroup returned %+v, want %+v", group, want)
 	}
 
@@ -187,8 +189,9 @@ func TestActionsService_UpdateOrganizationRunnerGroup(t *testing.T) {
 
 	ctx := context.Background()
 	req := UpdateRunnerGroupRequest{
-		Name:       String("octo-runner-group"),
-		Visibility: String("selected"),
+		Name:                     String("octo-runner-group"),
+		Visibility:               String("selected"),
+		AllowsPublicRepositories: Bool(true),
 	}
 	group, _, err := client.Actions.UpdateOrganizationRunnerGroup(ctx, "o", 2, req)
 	if err != nil {
@@ -206,7 +209,7 @@ func TestActionsService_UpdateOrganizationRunnerGroup(t *testing.T) {
 		AllowsPublicRepositories: Bool(true),
 	}
 
-	if !reflect.DeepEqual(group, want) {
+	if !cmp.Equal(group, want) {
 		t.Errorf("Actions.UpdateOrganizationRunnerGroup returned %+v, want %+v", group, want)
 	}
 
@@ -246,7 +249,7 @@ func TestActionsService_ListRepositoryAccessRunnerGroup(t *testing.T) {
 			{ID: Int64(43), NodeID: String("MDEwOlJlcG9zaXRvcnkxMjk2MjY5"), Name: String("Hello-World"), FullName: String("octocat/Hello-World")},
 		},
 	}
-	if !reflect.DeepEqual(groups, want) {
+	if !cmp.Equal(groups, want) {
 		t.Errorf("Actions.ListRepositoryAccessRunnerGroup returned %+v, want %+v", groups, want)
 	}
 
@@ -347,7 +350,7 @@ func TestActionsService_RemoveRepositoryAccessRunnerGroup(t *testing.T) {
 	})
 }
 
-func TestActionsService_ListRunerGroupRunners(t *testing.T) {
+func TestActionsService_ListRunnerGroupRunners(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 
@@ -359,9 +362,9 @@ func TestActionsService_ListRunerGroupRunners(t *testing.T) {
 
 	opts := &ListOptions{Page: 2, PerPage: 2}
 	ctx := context.Background()
-	runners, _, err := client.Actions.ListRunerGroupRunners(ctx, "o", 2, opts)
+	runners, _, err := client.Actions.ListRunnerGroupRunners(ctx, "o", 2, opts)
 	if err != nil {
-		t.Errorf("Actions.ListRunerGroupRunners returned error: %v", err)
+		t.Errorf("Actions.ListRunnerGroupRunners returned error: %v", err)
 	}
 
 	want := &Runners{
@@ -371,18 +374,18 @@ func TestActionsService_ListRunerGroupRunners(t *testing.T) {
 			{ID: Int64(24), Name: String("iMac"), OS: String("macos"), Status: String("offline")},
 		},
 	}
-	if !reflect.DeepEqual(runners, want) {
-		t.Errorf("Actions.ListRunerGroupRunners returned %+v, want %+v", runners, want)
+	if !cmp.Equal(runners, want) {
+		t.Errorf("Actions.ListRunnerGroupRunners returned %+v, want %+v", runners, want)
 	}
 
-	const methodName = "ListRunerGroupRunners"
+	const methodName = "ListRunnerGroupRunners"
 	testBadOptions(t, methodName, func() (err error) {
-		_, _, err = client.Actions.ListRunerGroupRunners(ctx, "\n", 2, opts)
+		_, _, err = client.Actions.ListRunnerGroupRunners(ctx, "\n", 2, opts)
 		return err
 	})
 
 	testNewRequestAndDoFailure(t, methodName, client, func() (*Response, error) {
-		got, resp, err := client.Actions.ListRunerGroupRunners(ctx, "o", 2, opts)
+		got, resp, err := client.Actions.ListRunnerGroupRunners(ctx, "o", 2, opts)
 		if got != nil {
 			t.Errorf("testNewRequestAndDoFailure %v = %#v, want nil", methodName, got)
 		}
@@ -390,7 +393,7 @@ func TestActionsService_ListRunerGroupRunners(t *testing.T) {
 	})
 }
 
-func TestActionsService_SetRunerGroupRunners(t *testing.T) {
+func TestActionsService_SetRunnerGroupRunners(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 
@@ -406,23 +409,23 @@ func TestActionsService_SetRunerGroupRunners(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	_, err := client.Actions.SetRunerGroupRunners(ctx, "o", 2, req)
+	_, err := client.Actions.SetRunnerGroupRunners(ctx, "o", 2, req)
 	if err != nil {
-		t.Errorf("Actions.SetRunerGroupRunners returned error: %v", err)
+		t.Errorf("Actions.SetRunnerGroupRunners returned error: %v", err)
 	}
 
-	const methodName = "SetRunerGroupRunners"
+	const methodName = "SetRunnerGroupRunners"
 	testBadOptions(t, methodName, func() (err error) {
-		_, err = client.Actions.SetRunerGroupRunners(ctx, "\n", 2, req)
+		_, err = client.Actions.SetRunnerGroupRunners(ctx, "\n", 2, req)
 		return err
 	})
 
 	testNewRequestAndDoFailure(t, methodName, client, func() (*Response, error) {
-		return client.Actions.SetRunerGroupRunners(ctx, "o", 2, req)
+		return client.Actions.SetRunnerGroupRunners(ctx, "o", 2, req)
 	})
 }
 
-func TestActionsService_AddRunerGroupRunners(t *testing.T) {
+func TestActionsService_AddRunnerGroupRunners(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 
@@ -431,23 +434,23 @@ func TestActionsService_AddRunerGroupRunners(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	_, err := client.Actions.AddRunerGroupRunners(ctx, "o", 2, 42)
+	_, err := client.Actions.AddRunnerGroupRunners(ctx, "o", 2, 42)
 	if err != nil {
-		t.Errorf("Actions.AddRunerGroupRunners returned error: %v", err)
+		t.Errorf("Actions.AddRunnerGroupRunners returned error: %v", err)
 	}
 
-	const methodName = "AddRunerGroupRunners"
+	const methodName = "AddRunnerGroupRunners"
 	testBadOptions(t, methodName, func() (err error) {
-		_, err = client.Actions.AddRunerGroupRunners(ctx, "\n", 2, 42)
+		_, err = client.Actions.AddRunnerGroupRunners(ctx, "\n", 2, 42)
 		return err
 	})
 
 	testNewRequestAndDoFailure(t, methodName, client, func() (*Response, error) {
-		return client.Actions.AddRunerGroupRunners(ctx, "o", 2, 42)
+		return client.Actions.AddRunnerGroupRunners(ctx, "o", 2, 42)
 	})
 }
 
-func TestActionsService_RemoveRunerGroupRunners(t *testing.T) {
+func TestActionsService_RemoveRunnerGroupRunners(t *testing.T) {
 	client, mux, _, teardown := setup()
 	defer teardown()
 
@@ -456,18 +459,150 @@ func TestActionsService_RemoveRunerGroupRunners(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	_, err := client.Actions.RemoveRunerGroupRunners(ctx, "o", 2, 42)
+	_, err := client.Actions.RemoveRunnerGroupRunners(ctx, "o", 2, 42)
 	if err != nil {
-		t.Errorf("Actions.RemoveRunerGroupRunners returned error: %v", err)
+		t.Errorf("Actions.RemoveRunnerGroupRunners returned error: %v", err)
 	}
 
-	const methodName = "RemoveRunerGroupRunners"
+	const methodName = "RemoveRunnerGroupRunners"
 	testBadOptions(t, methodName, func() (err error) {
-		_, err = client.Actions.RemoveRunerGroupRunners(ctx, "\n", 2, 42)
+		_, err = client.Actions.RemoveRunnerGroupRunners(ctx, "\n", 2, 42)
 		return err
 	})
 
 	testNewRequestAndDoFailure(t, methodName, client, func() (*Response, error) {
-		return client.Actions.RemoveRunerGroupRunners(ctx, "o", 2, 42)
+		return client.Actions.RemoveRunnerGroupRunners(ctx, "o", 2, 42)
 	})
+}
+
+func TestRunnerGroup_Marshal(t *testing.T) {
+	testJSONMarshal(t, &RunnerGroup{}, "{}")
+
+	u := &RunnerGroup{
+		ID:                       Int64(1),
+		Name:                     String("n"),
+		Visibility:               String("v"),
+		Default:                  Bool(true),
+		SelectedRepositoriesURL:  String("s"),
+		RunnersURL:               String("r"),
+		Inherited:                Bool(true),
+		AllowsPublicRepositories: Bool(true),
+	}
+
+	want := `{
+		"id": 1,
+		"name": "n",
+		"visibility": "v",
+		"default": true,
+		"selected_repositories_url": "s",
+		"runners_url": "r",
+		"inherited": true,
+		"allows_public_repositories": true
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestRunnerGroups_Marshal(t *testing.T) {
+	testJSONMarshal(t, &RunnerGroups{}, "{}")
+
+	u := &RunnerGroups{
+		TotalCount: int(1),
+		RunnerGroups: []*RunnerGroup{
+			{
+				ID:                       Int64(1),
+				Name:                     String("n"),
+				Visibility:               String("v"),
+				Default:                  Bool(true),
+				SelectedRepositoriesURL:  String("s"),
+				RunnersURL:               String("r"),
+				Inherited:                Bool(true),
+				AllowsPublicRepositories: Bool(true),
+			},
+		},
+	}
+
+	want := `{
+		"total_count": 1,
+		"runner_groups": [{
+			"id": 1,
+			"name": "n",
+			"visibility": "v",
+			"default": true,
+			"selected_repositories_url": "s",
+			"runners_url": "r",
+			"inherited": true,
+			"allows_public_repositories": true
+		}]		
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestCreateRunnerGroupRequest_Marshal(t *testing.T) {
+	testJSONMarshal(t, &CreateRunnerGroupRequest{}, "{}")
+
+	u := &CreateRunnerGroupRequest{
+		Name:                     String("n"),
+		Visibility:               String("v"),
+		SelectedRepositoryIDs:    []int64{1},
+		Runners:                  []int64{1},
+		AllowsPublicRepositories: Bool(true),
+	}
+
+	want := `{
+		"name": "n",
+		"visibility": "v",
+		"selected_repository_ids": [1],
+		"runners": [1],
+		"allows_public_repositories": true
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestUpdateRunnerGroupRequest_Marshal(t *testing.T) {
+	testJSONMarshal(t, &UpdateRunnerGroupRequest{}, "{}")
+
+	u := &UpdateRunnerGroupRequest{
+		Name:                     String("n"),
+		Visibility:               String("v"),
+		AllowsPublicRepositories: Bool(true),
+	}
+
+	want := `{
+		"name": "n",
+		"visibility": "v",
+		"allows_public_repositories": true
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestSetRepoAccessRunnerGroupRequest_Marshal(t *testing.T) {
+	testJSONMarshal(t, &SetRepoAccessRunnerGroupRequest{}, "{}")
+
+	u := &SetRepoAccessRunnerGroupRequest{
+		SelectedRepositoryIDs: []int64{1},
+	}
+
+	want := `{
+		"selected_repository_ids": [1]
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestSetRunnerGroupRunnersRequest_Marshal(t *testing.T) {
+	testJSONMarshal(t, &SetRunnerGroupRunnersRequest{}, "{}")
+
+	u := &SetRunnerGroupRunnersRequest{
+		Runners: []int64{1},
+	}
+
+	want := `{
+		"runners": [1]
+	}`
+
+	testJSONMarshal(t, u, want)
 }

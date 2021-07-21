@@ -20,6 +20,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 const (
@@ -107,7 +109,7 @@ func testFormValues(t *testing.T, r *http.Request, values values) {
 	}
 
 	r.ParseForm()
-	if got := r.Form; !reflect.DeepEqual(got, want) {
+	if got := r.Form; !cmp.Equal(got, want) {
 		t.Errorf("Request parameters: %v, want %v", got, want)
 	}
 }
@@ -199,6 +201,9 @@ func testNewRequestAndDoFailure(t *testing.T, methodName string, client *Client,
 	client.BaseURL.Path = "/api-v3/"
 	client.rateLimits[0].Reset.Time = time.Now().Add(10 * time.Minute)
 	resp, err = f()
+	if bypass := resp.Request.Context().Value(bypassRateLimitCheck); bypass != nil {
+		return
+	}
 	if want := http.StatusForbidden; resp == nil || resp.Response.StatusCode != want {
 		if resp != nil {
 			t.Errorf("rate.Reset.Time > now %v resp = %#v, want StatusCode=%v", methodName, resp.Response, want)
@@ -224,6 +229,14 @@ func TestNewClient(t *testing.T) {
 	c2 := NewClient(nil)
 	if c.client == c2.client {
 		t.Error("NewClient returned same http.Clients, but they should differ")
+	}
+}
+
+func TestClient(t *testing.T) {
+	c := NewClient(nil)
+	c2 := c.Client()
+	if c.client == c2 {
+		t.Error("Client returned same http.Client, but should be different")
 	}
 }
 
@@ -633,6 +646,20 @@ func TestResponse_cursorPagination(t *testing.T) {
 	if got, want := response.NextPageToken, "url-encoded-next-page-token"; want != got {
 		t.Errorf("response.NextPageToken: %v, want %v", got, want)
 	}
+
+	// cursor-based pagination with "cursor" param
+	r = http.Response{
+		Header: http.Header{
+			"Link": {
+				`<https://api.github.com/?cursor=v1_12345678>; rel="next"`,
+			},
+		},
+	}
+
+	response = newResponse(&r)
+	if got, want := response.Cursor, "v1_12345678"; got != want {
+		t.Errorf("response.Cursor: %v, want %v", got, want)
+	}
 }
 
 func TestResponse_populatePageValues_invalid(t *testing.T) {
@@ -693,7 +720,7 @@ func TestDo(t *testing.T) {
 	client.Do(ctx, req, body)
 
 	want := &foo{"a"}
-	if !reflect.DeepEqual(body, want) {
+	if !cmp.Equal(body, want) {
 		t.Errorf("Response body = %v, want %v", body, want)
 	}
 }
@@ -1065,7 +1092,7 @@ func TestSanitizeURL(t *testing.T) {
 		inURL, _ := url.Parse(tt.in)
 		want, _ := url.Parse(tt.want)
 
-		if got := sanitizeURL(inURL); !reflect.DeepEqual(got, want) {
+		if got := sanitizeURL(inURL); !cmp.Equal(got, want) {
 			t.Errorf("sanitizeURL(%v) returned %v, want %v", tt.in, got, want)
 		}
 	}
@@ -1089,10 +1116,7 @@ func TestCheckResponse(t *testing.T) {
 		Response: res,
 		Message:  "m",
 		Errors:   []Error{{Resource: "r", Field: "f", Code: "c"}},
-		Block: &struct {
-			Reason    string     `json:"reason,omitempty"`
-			CreatedAt *Timestamp `json:"created_at,omitempty"`
-		}{
+		Block: &ErrorBlock{
 			Reason:    "dmca",
 			CreatedAt: &Timestamp{time.Date(2016, time.March, 17, 15, 39, 46, 0, time.UTC)},
 		},
@@ -1192,10 +1216,7 @@ func TestErrorResponse_Is(t *testing.T) {
 		Response: &http.Response{},
 		Message:  "m",
 		Errors:   []Error{{Resource: "r", Field: "f", Code: "c"}},
-		Block: &struct {
-			Reason    string     `json:"reason,omitempty"`
-			CreatedAt *Timestamp `json:"created_at,omitempty"`
-		}{
+		Block: &ErrorBlock{
 			Reason:    "r",
 			CreatedAt: &Timestamp{time.Date(2016, time.March, 17, 15, 39, 46, 0, time.UTC)},
 		},
@@ -1211,10 +1232,7 @@ func TestErrorResponse_Is(t *testing.T) {
 				Response: &http.Response{},
 				Errors:   []Error{{Resource: "r", Field: "f", Code: "c"}},
 				Message:  "m",
-				Block: &struct {
-					Reason    string     `json:"reason,omitempty"`
-					CreatedAt *Timestamp `json:"created_at,omitempty"`
-				}{
+				Block: &ErrorBlock{
 					Reason:    "r",
 					CreatedAt: &Timestamp{time.Date(2016, time.March, 17, 15, 39, 46, 0, time.UTC)},
 				},
@@ -1227,10 +1245,7 @@ func TestErrorResponse_Is(t *testing.T) {
 				Response: &http.Response{},
 				Errors:   []Error{{Resource: "r", Field: "f", Code: "c"}},
 				Message:  "m1",
-				Block: &struct {
-					Reason    string     `json:"reason,omitempty"`
-					CreatedAt *Timestamp `json:"created_at,omitempty"`
-				}{
+				Block: &ErrorBlock{
 					Reason:    "r",
 					CreatedAt: &Timestamp{time.Date(2016, time.March, 17, 15, 39, 46, 0, time.UTC)},
 				},
@@ -1243,10 +1258,7 @@ func TestErrorResponse_Is(t *testing.T) {
 				Response: &http.Response{},
 				Errors:   []Error{{Resource: "r", Field: "f", Code: "c"}},
 				Message:  "m",
-				Block: &struct {
-					Reason    string     `json:"reason,omitempty"`
-					CreatedAt *Timestamp `json:"created_at,omitempty"`
-				}{
+				Block: &ErrorBlock{
 					Reason:    "r",
 					CreatedAt: &Timestamp{time.Date(2016, time.March, 17, 15, 39, 46, 0, time.UTC)},
 				},
@@ -1258,10 +1270,7 @@ func TestErrorResponse_Is(t *testing.T) {
 			otherError: &ErrorResponse{
 				Errors:  []Error{{Resource: "r", Field: "f", Code: "c"}},
 				Message: "m",
-				Block: &struct {
-					Reason    string     `json:"reason,omitempty"`
-					CreatedAt *Timestamp `json:"created_at,omitempty"`
-				}{
+				Block: &ErrorBlock{
 					Reason:    "r",
 					CreatedAt: &Timestamp{time.Date(2016, time.March, 17, 15, 39, 46, 0, time.UTC)},
 				},
@@ -1274,10 +1283,7 @@ func TestErrorResponse_Is(t *testing.T) {
 				Response: &http.Response{},
 				Errors:   []Error{{Resource: "r1", Field: "f1", Code: "c1"}},
 				Message:  "m",
-				Block: &struct {
-					Reason    string     `json:"reason,omitempty"`
-					CreatedAt *Timestamp `json:"created_at,omitempty"`
-				}{
+				Block: &ErrorBlock{
 					Reason:    "r",
 					CreatedAt: &Timestamp{time.Date(2016, time.March, 17, 15, 39, 46, 0, time.UTC)},
 				},
@@ -1290,10 +1296,7 @@ func TestErrorResponse_Is(t *testing.T) {
 				Response: &http.Response{},
 				Errors:   []Error{},
 				Message:  "m",
-				Block: &struct {
-					Reason    string     `json:"reason,omitempty"`
-					CreatedAt *Timestamp `json:"created_at,omitempty"`
-				}{
+				Block: &ErrorBlock{
 					Reason:    "r",
 					CreatedAt: &Timestamp{time.Date(2016, time.March, 17, 15, 39, 46, 0, time.UTC)},
 				},
@@ -1315,10 +1318,7 @@ func TestErrorResponse_Is(t *testing.T) {
 				Response: &http.Response{},
 				Errors:   []Error{{Resource: "r", Field: "f", Code: "c"}},
 				Message:  "m",
-				Block: &struct {
-					Reason    string     `json:"reason,omitempty"`
-					CreatedAt *Timestamp `json:"created_at,omitempty"`
-				}{
+				Block: &ErrorBlock{
 					Reason:    "r1",
 					CreatedAt: &Timestamp{time.Date(2016, time.March, 17, 15, 39, 46, 0, time.UTC)},
 				},
@@ -1331,10 +1331,7 @@ func TestErrorResponse_Is(t *testing.T) {
 				Response: &http.Response{},
 				Errors:   []Error{{Resource: "r", Field: "f", Code: "c"}},
 				Message:  "m",
-				Block: &struct {
-					Reason    string     `json:"reason,omitempty"`
-					CreatedAt *Timestamp `json:"created_at,omitempty"`
-				}{
+				Block: &ErrorBlock{
 					Reason:    "r",
 					CreatedAt: nil,
 				},
@@ -1347,10 +1344,7 @@ func TestErrorResponse_Is(t *testing.T) {
 				Response: &http.Response{},
 				Errors:   []Error{{Resource: "r", Field: "f", Code: "c"}},
 				Message:  "m",
-				Block: &struct {
-					Reason    string     `json:"reason,omitempty"`
-					CreatedAt *Timestamp `json:"created_at,omitempty"`
-				}{
+				Block: &ErrorBlock{
 					Reason:    "r",
 					CreatedAt: &Timestamp{time.Date(2017, time.March, 17, 15, 39, 46, 0, time.UTC)},
 				},
@@ -1684,7 +1678,7 @@ func TestRateLimits(t *testing.T) {
 			Reset:     Timestamp{time.Date(2013, time.July, 1, 17, 47, 54, 0, time.UTC).Local()},
 		},
 	}
-	if !reflect.DeepEqual(rate, want) {
+	if !cmp.Equal(rate, want) {
 		t.Errorf("RateLimits returned %+v, want %+v", rate, want)
 	}
 
@@ -1707,6 +1701,52 @@ func TestRateLimits_coverage(t *testing.T) {
 		_, resp, err := client.RateLimits(ctx)
 		return resp, err
 	})
+}
+
+func TestRateLimits_overQuota(t *testing.T) {
+	client, mux, _, teardown := setup()
+	defer teardown()
+
+	client.rateLimits[coreCategory] = Rate{
+		Limit:     1,
+		Remaining: 0,
+		Reset:     Timestamp{time.Now().Add(time.Hour).Local()},
+	}
+	mux.HandleFunc("/rate_limit", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, `{"resources":{
+			"core": {"limit":2,"remaining":1,"reset":1372700873},
+			"search": {"limit":3,"remaining":2,"reset":1372700874}
+		}}`)
+	})
+
+	ctx := context.Background()
+	rate, _, err := client.RateLimits(ctx)
+	if err != nil {
+		t.Errorf("RateLimits returned error: %v", err)
+	}
+
+	want := &RateLimits{
+		Core: &Rate{
+			Limit:     2,
+			Remaining: 1,
+			Reset:     Timestamp{time.Date(2013, time.July, 1, 17, 47, 53, 0, time.UTC).Local()},
+		},
+		Search: &Rate{
+			Limit:     3,
+			Remaining: 2,
+			Reset:     Timestamp{time.Date(2013, time.July, 1, 17, 47, 54, 0, time.UTC).Local()},
+		},
+	}
+	if !cmp.Equal(rate, want) {
+		t.Errorf("RateLimits returned %+v, want %+v", rate, want)
+	}
+
+	if got, want := client.rateLimits[coreCategory], *want.Core; got != want {
+		t.Errorf("client.rateLimits[coreCategory] is %+v, want %+v", got, want)
+	}
+	if got, want := client.rateLimits[searchCategory], *want.Search; got != want {
+		t.Errorf("client.rateLimits[searchCategory] is %+v, want %+v", got, want)
+	}
 }
 
 func TestSetCredentialsAsHeaders(t *testing.T) {
@@ -1994,4 +2034,175 @@ func TestBareDo_returnsOpenBody(t *testing.T) {
 	if err := resp.Body.Close(); err != nil {
 		t.Fatalf("resp.Body.Close() returned error: %v", err)
 	}
+}
+
+// roundTripperFunc creates a mock RoundTripper (transport)
+type roundTripperFunc func(*http.Request) (*http.Response, error)
+
+func (fn roundTripperFunc) RoundTrip(r *http.Request) (*http.Response, error) {
+	return fn(r)
+}
+
+func TestErrorResponse_Marshal(t *testing.T) {
+	testJSONMarshal(t, &ErrorResponse{}, "{}")
+
+	u := &ErrorResponse{
+		Message: "msg",
+		Errors: []Error{
+			{
+				Resource: "res",
+				Field:    "f",
+				Code:     "c",
+				Message:  "msg",
+			},
+		},
+		Block: &ErrorBlock{
+			Reason:    "reason",
+			CreatedAt: &Timestamp{referenceTime},
+		},
+		DocumentationURL: "doc",
+	}
+
+	want := `{
+		"message": "msg",
+		"errors": [
+			{
+				"resource": "res",
+				"field": "f",
+				"code": "c",
+				"message": "msg"
+			}
+		],
+		"block": {
+			"reason": "reason",
+			"created_at": ` + referenceTimeStr + `
+		},
+		"documentation_url": "doc"
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestErrorBlock_Marshal(t *testing.T) {
+	testJSONMarshal(t, &ErrorBlock{}, "{}")
+
+	u := &ErrorBlock{
+		Reason:    "reason",
+		CreatedAt: &Timestamp{referenceTime},
+	}
+
+	want := `{
+		"reason": "reason",
+		"created_at": ` + referenceTimeStr + `
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestRateLimitError_Marshal(t *testing.T) {
+	testJSONMarshal(t, &RateLimitError{}, "{}")
+
+	u := &RateLimitError{
+		Rate: Rate{
+			Limit:     1,
+			Remaining: 1,
+			Reset:     Timestamp{referenceTime},
+		},
+		Message: "msg",
+	}
+
+	want := `{
+		"Rate": {
+			"limit": 1,
+			"remaining": 1,
+			"reset": ` + referenceTimeStr + `
+		},
+		"message": "msg"
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestAbuseRateLimitError_Marshal(t *testing.T) {
+	testJSONMarshal(t, &AbuseRateLimitError{}, "{}")
+
+	u := &AbuseRateLimitError{
+		Message: "msg",
+	}
+
+	want := `{
+		"message": "msg"
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestError_Marshal(t *testing.T) {
+	testJSONMarshal(t, &Error{}, "{}")
+
+	u := &Error{
+		Resource: "res",
+		Field:    "field",
+		Code:     "code",
+		Message:  "msg",
+	}
+
+	want := `{
+		"resource": "res",
+		"field": "field",
+		"code": "code",
+		"message": "msg"
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestRate_Marshal(t *testing.T) {
+	testJSONMarshal(t, &Rate{}, "{}")
+
+	u := &Rate{
+		Limit:     1,
+		Remaining: 1,
+		Reset:     Timestamp{referenceTime},
+	}
+
+	want := `{
+		"limit": 1,
+		"remaining": 1,
+		"reset": ` + referenceTimeStr + `
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestRateLimits_Marshal(t *testing.T) {
+	testJSONMarshal(t, &RateLimits{}, "{}")
+
+	u := &RateLimits{
+		Core: &Rate{
+			Limit:     1,
+			Remaining: 1,
+			Reset:     Timestamp{referenceTime},
+		},
+		Search: &Rate{
+			Limit:     1,
+			Remaining: 1,
+			Reset:     Timestamp{referenceTime},
+		},
+	}
+
+	want := `{
+		"core": {
+			"limit": 1,
+			"remaining": 1,
+			"reset": ` + referenceTimeStr + `
+		},
+		"search": {
+			"limit": 1,
+			"remaining": 1,
+			"reset": ` + referenceTimeStr + `
+		}
+	}`
+
+	testJSONMarshal(t, u, want)
 }

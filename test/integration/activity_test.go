@@ -3,6 +3,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build integration
 // +build integration
 
 package integration
@@ -11,7 +12,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/google/go-github/v35/github"
+	"github.com/google/go-github/v37/github"
 )
 
 const (

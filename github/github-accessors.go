@@ -172,6 +172,30 @@ func (a *Alert) GetCreatedAt() Timestamp {
 	return *a.CreatedAt
 }
 
+// GetDismissedAt returns the DismissedAt field if it's non-nil, zero value otherwise.
+func (a *Alert) GetDismissedAt() Timestamp {
+	if a == nil || a.DismissedAt == nil {
+		return Timestamp{}
+	}
+	return *a.DismissedAt
+}
+
+// GetDismissedBy returns the DismissedBy field.
+func (a *Alert) GetDismissedBy() *User {
+	if a == nil {
+		return nil
+	}
+	return a.DismissedBy
+}
+
+// GetDismissedReason returns the DismissedReason field if it's non-nil, zero value otherwise.
+func (a *Alert) GetDismissedReason() string {
+	if a == nil || a.DismissedReason == nil {
+		return ""
+	}
+	return *a.DismissedReason
+}
+
 // GetHTMLURL returns the HTMLURL field if it's non-nil, zero value otherwise.
 func (a *Alert) GetHTMLURL() string {
 	if a == nil || a.HTMLURL == nil {
@@ -180,12 +204,36 @@ func (a *Alert) GetHTMLURL() string {
 	return *a.HTMLURL
 }
 
+// GetInstancesURL returns the InstancesURL field if it's non-nil, zero value otherwise.
+func (a *Alert) GetInstancesURL() string {
+	if a == nil || a.InstancesURL == nil {
+		return ""
+	}
+	return *a.InstancesURL
+}
+
+// GetMostRecentInstance returns the MostRecentInstance field.
+func (a *Alert) GetMostRecentInstance() *MostRecentInstance {
+	if a == nil {
+		return nil
+	}
+	return a.MostRecentInstance
+}
+
 // GetOpen returns the Open field if it's non-nil, zero value otherwise.
 func (a *Alert) GetOpen() bool {
 	if a == nil || a.Open == nil {
 		return false
 	}
 	return *a.Open
+}
+
+// GetRule returns the Rule field.
+func (a *Alert) GetRule() *Rule {
+	if a == nil {
+		return nil
+	}
+	return a.Rule
 }
 
 // GetRuleDescription returns the RuleDescription field if it's non-nil, zero value otherwise.
@@ -212,12 +260,12 @@ func (a *Alert) GetRuleSeverity() string {
 	return *a.RuleSeverity
 }
 
-// GetTool returns the Tool field if it's non-nil, zero value otherwise.
-func (a *Alert) GetTool() string {
-	if a == nil || a.Tool == nil {
-		return ""
+// GetTool returns the Tool field.
+func (a *Alert) GetTool() *Tool {
+	if a == nil {
+		return nil
 	}
-	return *a.Tool
+	return a.Tool
 }
 
 // GetURL returns the URL field if it's non-nil, zero value otherwise.
@@ -1612,6 +1660,14 @@ func (c *CheckSuite) GetConclusion() string {
 	return *c.Conclusion
 }
 
+// GetCreatedAt returns the CreatedAt field if it's non-nil, zero value otherwise.
+func (c *CheckSuite) GetCreatedAt() Timestamp {
+	if c == nil || c.CreatedAt == nil {
+		return Timestamp{}
+	}
+	return *c.CreatedAt
+}
+
 // GetHeadBranch returns the HeadBranch field if it's non-nil, zero value otherwise.
 func (c *CheckSuite) GetHeadBranch() string {
 	if c == nil || c.HeadBranch == nil {
@@ -1666,6 +1722,14 @@ func (c *CheckSuite) GetStatus() string {
 		return ""
 	}
 	return *c.Status
+}
+
+// GetUpdatedAt returns the UpdatedAt field if it's non-nil, zero value otherwise.
+func (c *CheckSuite) GetUpdatedAt() Timestamp {
+	if c == nil || c.UpdatedAt == nil {
+		return Timestamp{}
+	}
+	return *c.UpdatedAt
 }
 
 // GetURL returns the URL field if it's non-nil, zero value otherwise.
@@ -2900,6 +2964,14 @@ func (c *CreateOrgInvitationOptions) GetRole() string {
 	return *c.Role
 }
 
+// GetAllowsPublicRepositories returns the AllowsPublicRepositories field if it's non-nil, zero value otherwise.
+func (c *CreateRunnerGroupRequest) GetAllowsPublicRepositories() bool {
+	if c == nil || c.AllowsPublicRepositories == nil {
+		return false
+	}
+	return *c.AllowsPublicRepositories
+}
+
 // GetName returns the Name field if it's non-nil, zero value otherwise.
 func (c *CreateRunnerGroupRequest) GetName() string {
 	if c == nil || c.Name == nil {
@@ -3620,6 +3692,78 @@ func (d *DraftReviewComment) GetStartSide() string {
 	return *d.StartSide
 }
 
+// GetRef returns the Ref field.
+func (e *EditBase) GetRef() *EditRef {
+	if e == nil {
+		return nil
+	}
+	return e.Ref
+}
+
+// GetSHA returns the SHA field.
+func (e *EditBase) GetSHA() *EditSHA {
+	if e == nil {
+		return nil
+	}
+	return e.SHA
+}
+
+// GetFrom returns the From field if it's non-nil, zero value otherwise.
+func (e *EditBody) GetFrom() string {
+	if e == nil || e.From == nil {
+		return ""
+	}
+	return *e.From
+}
+
+// GetBase returns the Base field.
+func (e *EditChange) GetBase() *EditBase {
+	if e == nil {
+		return nil
+	}
+	return e.Base
+}
+
+// GetBody returns the Body field.
+func (e *EditChange) GetBody() *EditBody {
+	if e == nil {
+		return nil
+	}
+	return e.Body
+}
+
+// GetTitle returns the Title field.
+func (e *EditChange) GetTitle() *EditTitle {
+	if e == nil {
+		return nil
+	}
+	return e.Title
+}
+
+// GetFrom returns the From field if it's non-nil, zero value otherwise.
+func (e *EditRef) GetFrom() string {
+	if e == nil || e.From == nil {
+		return ""
+	}
+	return *e.From
+}
+
+// GetFrom returns the From field if it's non-nil, zero value otherwise.
+func (e *EditSHA) GetFrom() string {
+	if e == nil || e.From == nil {
+		return ""
+	}
+	return *e.From
+}
+
+// GetFrom returns the From field if it's non-nil, zero value otherwise.
+func (e *EditTitle) GetFrom() string {
+	if e == nil || e.From == nil {
+		return ""
+	}
+	return *e.From
+}
+
 // GetAvatarURL returns the AvatarURL field if it's non-nil, zero value otherwise.
 func (e *Enterprise) GetAvatarURL() string {
 	if e == nil || e.AvatarURL == nil {
@@ -3820,6 +3964,22 @@ func (e *EnvReviewers) GetType() string {
 	return *e.Type
 }
 
+// GetCreatedAt returns the CreatedAt field if it's non-nil, zero value otherwise.
+func (e *ErrorBlock) GetCreatedAt() Timestamp {
+	if e == nil || e.CreatedAt == nil {
+		return Timestamp{}
+	}
+	return *e.CreatedAt
+}
+
+// GetBlock returns the Block field.
+func (e *ErrorResponse) GetBlock() *ErrorBlock {
+	if e == nil {
+		return nil
+	}
+	return e.Block
+}
+
 // GetActor returns the Actor field.
 func (e *Event) GetActor() *User {
 	if e == nil {
@@ -3900,6 +4060,54 @@ func (f *FeedLink) GetType() string {
 	return *f.Type
 }
 
+// GetCurrentUser returns the CurrentUser field.
+func (f *FeedLinks) GetCurrentUser() *FeedLink {
+	if f == nil {
+		return nil
+	}
+	return f.CurrentUser
+}
+
+// GetCurrentUserActor returns the CurrentUserActor field.
+func (f *FeedLinks) GetCurrentUserActor() *FeedLink {
+	if f == nil {
+		return nil
+	}
+	return f.CurrentUserActor
+}
+
+// GetCurrentUserOrganization returns the CurrentUserOrganization field.
+func (f *FeedLinks) GetCurrentUserOrganization() *FeedLink {
+	if f == nil {
+		return nil
+	}
+	return f.CurrentUserOrganization
+}
+
+// GetCurrentUserPublic returns the CurrentUserPublic field.
+func (f *FeedLinks) GetCurrentUserPublic() *FeedLink {
+	if f == nil {
+		return nil
+	}
+	return f.CurrentUserPublic
+}
+
+// GetTimeline returns the Timeline field.
+func (f *FeedLinks) GetTimeline() *FeedLink {
+	if f == nil {
+		return nil
+	}
+	return f.Timeline
+}
+
+// GetUser returns the User field.
+func (f *FeedLinks) GetUser() *FeedLink {
+	if f == nil {
+		return nil
+	}
+	return f.User
+}
+
 // GetCurrentUserActorURL returns the CurrentUserActorURL field if it's non-nil, zero value otherwise.
 func (f *Feeds) GetCurrentUserActorURL() string {
 	if f == nil || f.CurrentUserActorURL == nil {
@@ -3930,6 +4138,14 @@ func (f *Feeds) GetCurrentUserURL() string {
 		return ""
 	}
 	return *f.CurrentUserURL
+}
+
+// GetLinks returns the Links field.
+func (f *Feeds) GetLinks() *FeedLinks {
+	if f == nil {
+		return nil
+	}
+	return f.Links
 }
 
 // GetTimelineURL returns the TimelineURL field if it's non-nil, zero value otherwise.
@@ -4026,6 +4242,14 @@ func (g *Gist) GetDescription() string {
 		return ""
 	}
 	return *g.Description
+}
+
+// GetFiles returns the Files map if it's non-nil, an empty map otherwise.
+func (g *Gist) GetFiles() map[GistFilename]GistFile {
+	if g == nil || g.Files == nil {
+		return map[GistFilename]GistFile{}
+	}
+	return g.Files
 }
 
 // GetGitPullURL returns the GitPullURL field if it's non-nil, zero value otherwise.
@@ -4684,6 +4908,142 @@ func (h *HookConfig) GetURL() string {
 	return *h.URL
 }
 
+// GetAction returns the Action field if it's non-nil, zero value otherwise.
+func (h *HookDelivery) GetAction() string {
+	if h == nil || h.Action == nil {
+		return ""
+	}
+	return *h.Action
+}
+
+// GetDeliveredAt returns the DeliveredAt field if it's non-nil, zero value otherwise.
+func (h *HookDelivery) GetDeliveredAt() Timestamp {
+	if h == nil || h.DeliveredAt == nil {
+		return Timestamp{}
+	}
+	return *h.DeliveredAt
+}
+
+// GetDuration returns the Duration field.
+func (h *HookDelivery) GetDuration() *float64 {
+	if h == nil {
+		return nil
+	}
+	return h.Duration
+}
+
+// GetEvent returns the Event field if it's non-nil, zero value otherwise.
+func (h *HookDelivery) GetEvent() string {
+	if h == nil || h.Event == nil {
+		return ""
+	}
+	return *h.Event
+}
+
+// GetGUID returns the GUID field if it's non-nil, zero value otherwise.
+func (h *HookDelivery) GetGUID() string {
+	if h == nil || h.GUID == nil {
+		return ""
+	}
+	return *h.GUID
+}
+
+// GetID returns the ID field if it's non-nil, zero value otherwise.
+func (h *HookDelivery) GetID() int64 {
+	if h == nil || h.ID == nil {
+		return 0
+	}
+	return *h.ID
+}
+
+// GetInstallationID returns the InstallationID field if it's non-nil, zero value otherwise.
+func (h *HookDelivery) GetInstallationID() string {
+	if h == nil || h.InstallationID == nil {
+		return ""
+	}
+	return *h.InstallationID
+}
+
+// GetRedelivery returns the Redelivery field if it's non-nil, zero value otherwise.
+func (h *HookDelivery) GetRedelivery() bool {
+	if h == nil || h.Redelivery == nil {
+		return false
+	}
+	return *h.Redelivery
+}
+
+// GetRepositoryID returns the RepositoryID field if it's non-nil, zero value otherwise.
+func (h *HookDelivery) GetRepositoryID() int64 {
+	if h == nil || h.RepositoryID == nil {
+		return 0
+	}
+	return *h.RepositoryID
+}
+
+// GetRequest returns the Request field.
+func (h *HookDelivery) GetRequest() *HookRequest {
+	if h == nil {
+		return nil
+	}
+	return h.Request
+}
+
+// GetResponse returns the Response field.
+func (h *HookDelivery) GetResponse() *HookResponse {
+	if h == nil {
+		return nil
+	}
+	return h.Response
+}
+
+// GetStatus returns the Status field if it's non-nil, zero value otherwise.
+func (h *HookDelivery) GetStatus() string {
+	if h == nil || h.Status == nil {
+		return ""
+	}
+	return *h.Status
+}
+
+// GetStatusCode returns the StatusCode field if it's non-nil, zero value otherwise.
+func (h *HookDelivery) GetStatusCode() int {
+	if h == nil || h.StatusCode == nil {
+		return 0
+	}
+	return *h.StatusCode
+}
+
+// GetHeaders returns the Headers map if it's non-nil, an empty map otherwise.
+func (h *HookRequest) GetHeaders() map[string]string {
+	if h == nil || h.Headers == nil {
+		return map[string]string{}
+	}
+	return h.Headers
+}
+
+// GetRawPayload returns the RawPayload field if it's non-nil, zero value otherwise.
+func (h *HookRequest) GetRawPayload() json.RawMessage {
+	if h == nil || h.RawPayload == nil {
+		return json.RawMessage{}
+	}
+	return *h.RawPayload
+}
+
+// GetHeaders returns the Headers map if it's non-nil, an empty map otherwise.
+func (h *HookResponse) GetHeaders() map[string]string {
+	if h == nil || h.Headers == nil {
+		return map[string]string{}
+	}
+	return h.Headers
+}
+
+// GetRawPayload returns the RawPayload field if it's non-nil, zero value otherwise.
+func (h *HookResponse) GetRawPayload() json.RawMessage {
+	if h == nil || h.RawPayload == nil {
+		return json.RawMessage{}
+	}
+	return *h.RawPayload
+}
+
 // GetActiveHooks returns the ActiveHooks field if it's non-nil, zero value otherwise.
 func (h *HookStats) GetActiveHooks() int {
 	if h == nil || h.ActiveHooks == nil {
@@ -5140,6 +5500,14 @@ func (i *InstallationPermissions) GetEmails() string {
 	return *i.Emails
 }
 
+// GetEnvironments returns the Environments field if it's non-nil, zero value otherwise.
+func (i *InstallationPermissions) GetEnvironments() string {
+	if i == nil || i.Environments == nil {
+		return ""
+	}
+	return *i.Environments
+}
+
 // GetFollowers returns the Followers field if it's non-nil, zero value otherwise.
 func (i *InstallationPermissions) GetFollowers() string {
 	if i == nil || i.Followers == nil {
@@ -5212,6 +5580,22 @@ func (i *InstallationPermissions) GetOrganizationProjects() string {
 	return *i.OrganizationProjects
 }
 
+// GetOrganizationSecrets returns the OrganizationSecrets field if it's non-nil, zero value otherwise.
+func (i *InstallationPermissions) GetOrganizationSecrets() string {
+	if i == nil || i.OrganizationSecrets == nil {
+		return ""
+	}
+	return *i.OrganizationSecrets
+}
+
+// GetOrganizationSelfHostedRunners returns the OrganizationSelfHostedRunners field if it's non-nil, zero value otherwise.
+func (i *InstallationPermissions) GetOrganizationSelfHostedRunners() string {
+	if i == nil || i.OrganizationSelfHostedRunners == nil {
+		return ""
+	}
+	return *i.OrganizationSelfHostedRunners
+}
+
 // GetOrganizationUserBlocking returns the OrganizationUserBlocking field if it's non-nil, zero value otherwise.
 func (i *InstallationPermissions) GetOrganizationUserBlocking() string {
 	if i == nil || i.OrganizationUserBlocking == nil {
@@ -5268,6 +5652,30 @@ func (i *InstallationPermissions) GetRepositoryProjects() string {
 	return *i.RepositoryProjects
 }
 
+// GetSecrets returns the Secrets field if it's non-nil, zero value otherwise.
+func (i *InstallationPermissions) GetSecrets() string {
+	if i == nil || i.Secrets == nil {
+		return ""
+	}
+	return *i.Secrets
+}
+
+// GetSecretScanningAlerts returns the SecretScanningAlerts field if it's non-nil, zero value otherwise.
+func (i *InstallationPermissions) GetSecretScanningAlerts() string {
+	if i == nil || i.SecretScanningAlerts == nil {
+		return ""
+	}
+	return *i.SecretScanningAlerts
+}
+
+// GetSecurityEvents returns the SecurityEvents field if it's non-nil, zero value otherwise.
+func (i *InstallationPermissions) GetSecurityEvents() string {
+	if i == nil || i.SecurityEvents == nil {
+		return ""
+	}
+	return *i.SecurityEvents
+}
+
 // GetSingleFile returns the SingleFile field if it's non-nil, zero value otherwise.
 func (i *InstallationPermissions) GetSingleFile() string {
 	if i == nil || i.SingleFile == nil {
@@ -5298,6 +5706,14 @@ func (i *InstallationPermissions) GetVulnerabilityAlerts() string {
 		return ""
 	}
 	return *i.VulnerabilityAlerts
+}
+
+// GetWorkflows returns the Workflows field if it's non-nil, zero value otherwise.
+func (i *InstallationPermissions) GetWorkflows() string {
+	if i == nil || i.Workflows == nil {
+		return ""
+	}
+	return *i.Workflows
 }
 
 // GetAction returns the Action field if it's non-nil, zero value otherwise.
@@ -5402,6 +5818,22 @@ func (i *Invitation) GetEmail() string {
 		return ""
 	}
 	return *i.Email
+}
+
+// GetFailedAt returns the FailedAt field if it's non-nil, zero value otherwise.
+func (i *Invitation) GetFailedAt() Timestamp {
+	if i == nil || i.FailedAt == nil {
+		return Timestamp{}
+	}
+	return *i.FailedAt
+}
+
+// GetFailedReason returns the FailedReason field if it's non-nil, zero value otherwise.
+func (i *Invitation) GetFailedReason() string {
+	if i == nil || i.FailedReason == nil {
+		return ""
+	}
+	return *i.FailedReason
 }
 
 // GetID returns the ID field if it's non-nil, zero value otherwise.
@@ -6108,12 +6540,28 @@ func (i *IssueImportResponse) GetURL() string {
 	return *i.URL
 }
 
+// GetDirection returns the Direction field if it's non-nil, zero value otherwise.
+func (i *IssueListCommentsOptions) GetDirection() string {
+	if i == nil || i.Direction == nil {
+		return ""
+	}
+	return *i.Direction
+}
+
 // GetSince returns the Since field if it's non-nil, zero value otherwise.
 func (i *IssueListCommentsOptions) GetSince() time.Time {
 	if i == nil || i.Since == nil {
 		return time.Time{}
 	}
 	return *i.Since
+}
+
+// GetSort returns the Sort field if it's non-nil, zero value otherwise.
+func (i *IssueListCommentsOptions) GetSort() string {
+	if i == nil || i.Sort == nil {
+		return ""
+	}
+	return *i.Sort
 }
 
 // GetAssignee returns the Assignee field if it's non-nil, zero value otherwise.
@@ -6716,6 +7164,46 @@ func (l *ListRepositories) GetTotalCount() int {
 	return *l.TotalCount
 }
 
+// GetEndColumn returns the EndColumn field if it's non-nil, zero value otherwise.
+func (l *Location) GetEndColumn() int {
+	if l == nil || l.EndColumn == nil {
+		return 0
+	}
+	return *l.EndColumn
+}
+
+// GetEndLine returns the EndLine field if it's non-nil, zero value otherwise.
+func (l *Location) GetEndLine() int {
+	if l == nil || l.EndLine == nil {
+		return 0
+	}
+	return *l.EndLine
+}
+
+// GetPath returns the Path field if it's non-nil, zero value otherwise.
+func (l *Location) GetPath() string {
+	if l == nil || l.Path == nil {
+		return ""
+	}
+	return *l.Path
+}
+
+// GetStartColumn returns the StartColumn field if it's non-nil, zero value otherwise.
+func (l *Location) GetStartColumn() int {
+	if l == nil || l.StartColumn == nil {
+		return 0
+	}
+	return *l.StartColumn
+}
+
+// GetStartLine returns the StartLine field if it's non-nil, zero value otherwise.
+func (l *Location) GetStartLine() int {
+	if l == nil || l.StartLine == nil {
+		return 0
+	}
+	return *l.StartLine
+}
+
 // GetEffectiveDate returns the EffectiveDate field if it's non-nil, zero value otherwise.
 func (m *MarketplacePendingChange) GetEffectiveDate() Timestamp {
 	if m == nil || m.EffectiveDate == nil {
@@ -7164,6 +7652,14 @@ func (m *MembershipEvent) GetTeam() *Team {
 	return m.Team
 }
 
+// GetText returns the Text field if it's non-nil, zero value otherwise.
+func (m *Message) GetText() string {
+	if m == nil || m.Text == nil {
+		return ""
+	}
+	return *m.Text
+}
+
 // GetAction returns the Action field if it's non-nil, zero value otherwise.
 func (m *MetaEvent) GetAction() string {
 	if m == nil || m.Action == nil {
@@ -7490,6 +7986,62 @@ func (m *MilestoneStats) GetTotalMilestones() int {
 		return 0
 	}
 	return *m.TotalMilestones
+}
+
+// GetAnalysisKey returns the AnalysisKey field if it's non-nil, zero value otherwise.
+func (m *MostRecentInstance) GetAnalysisKey() string {
+	if m == nil || m.AnalysisKey == nil {
+		return ""
+	}
+	return *m.AnalysisKey
+}
+
+// GetCommitSHA returns the CommitSHA field if it's non-nil, zero value otherwise.
+func (m *MostRecentInstance) GetCommitSHA() string {
+	if m == nil || m.CommitSHA == nil {
+		return ""
+	}
+	return *m.CommitSHA
+}
+
+// GetEnvironment returns the Environment field if it's non-nil, zero value otherwise.
+func (m *MostRecentInstance) GetEnvironment() string {
+	if m == nil || m.Environment == nil {
+		return ""
+	}
+	return *m.Environment
+}
+
+// GetLocation returns the Location field.
+func (m *MostRecentInstance) GetLocation() *Location {
+	if m == nil {
+		return nil
+	}
+	return m.Location
+}
+
+// GetMessage returns the Message field.
+func (m *MostRecentInstance) GetMessage() *Message {
+	if m == nil {
+		return nil
+	}
+	return m.Message
+}
+
+// GetRef returns the Ref field if it's non-nil, zero value otherwise.
+func (m *MostRecentInstance) GetRef() string {
+	if m == nil || m.Ref == nil {
+		return ""
+	}
+	return *m.Ref
+}
+
+// GetState returns the State field if it's non-nil, zero value otherwise.
+func (m *MostRecentInstance) GetState() string {
+	if m == nil || m.State == nil {
+		return ""
+	}
+	return *m.State
 }
 
 // GetBase returns the Base field if it's non-nil, zero value otherwise.
@@ -9220,6 +9772,14 @@ func (p *Project) GetURL() string {
 	return *p.URL
 }
 
+// GetFrom returns the From field if it's non-nil, zero value otherwise.
+func (p *ProjectBody) GetFrom() string {
+	if p == nil || p.From == nil {
+		return ""
+	}
+	return *p.From
+}
+
 // GetArchived returns the Archived field if it's non-nil, zero value otherwise.
 func (p *ProjectCard) GetArchived() bool {
 	if p == nil || p.Archived == nil {
@@ -9340,6 +9900,14 @@ func (p *ProjectCard) GetURL() string {
 	return *p.URL
 }
 
+// GetNote returns the Note field.
+func (p *ProjectCardChange) GetNote() *ProjectCardNote {
+	if p == nil {
+		return nil
+	}
+	return p.Note
+}
+
 // GetAction returns the Action field if it's non-nil, zero value otherwise.
 func (p *ProjectCardEvent) GetAction() string {
 	if p == nil || p.Action == nil {
@@ -9412,12 +9980,36 @@ func (p *ProjectCardListOptions) GetArchivedState() string {
 	return *p.ArchivedState
 }
 
+// GetFrom returns the From field if it's non-nil, zero value otherwise.
+func (p *ProjectCardNote) GetFrom() string {
+	if p == nil || p.From == nil {
+		return ""
+	}
+	return *p.From
+}
+
 // GetArchived returns the Archived field if it's non-nil, zero value otherwise.
 func (p *ProjectCardOptions) GetArchived() bool {
 	if p == nil || p.Archived == nil {
 		return false
 	}
 	return *p.Archived
+}
+
+// GetBody returns the Body field.
+func (p *ProjectChange) GetBody() *ProjectBody {
+	if p == nil {
+		return nil
+	}
+	return p.Body
+}
+
+// GetName returns the Name field.
+func (p *ProjectChange) GetName() *ProjectName {
+	if p == nil {
+		return nil
+	}
+	return p.Name
 }
 
 // GetPermission returns the Permission field if it's non-nil, zero value otherwise.
@@ -9492,6 +10084,14 @@ func (p *ProjectColumn) GetURL() string {
 	return *p.URL
 }
 
+// GetName returns the Name field.
+func (p *ProjectColumnChange) GetName() *ProjectColumnName {
+	if p == nil {
+		return nil
+	}
+	return p.Name
+}
+
 // GetAction returns the Action field if it's non-nil, zero value otherwise.
 func (p *ProjectColumnEvent) GetAction() string {
 	if p == nil || p.Action == nil {
@@ -9556,6 +10156,14 @@ func (p *ProjectColumnEvent) GetSender() *User {
 	return p.Sender
 }
 
+// GetFrom returns the From field if it's non-nil, zero value otherwise.
+func (p *ProjectColumnName) GetFrom() string {
+	if p == nil || p.From == nil {
+		return ""
+	}
+	return *p.From
+}
+
 // GetAction returns the Action field if it's non-nil, zero value otherwise.
 func (p *ProjectEvent) GetAction() string {
 	if p == nil || p.Action == nil {
@@ -9610,6 +10218,14 @@ func (p *ProjectEvent) GetSender() *User {
 		return nil
 	}
 	return p.Sender
+}
+
+// GetFrom returns the From field if it's non-nil, zero value otherwise.
+func (p *ProjectName) GetFrom() string {
+	if p == nil || p.From == nil {
+		return ""
+	}
+	return *p.From
 }
 
 // GetBody returns the Body field if it's non-nil, zero value otherwise.
@@ -9692,6 +10308,14 @@ func (p *Protection) GetEnforceAdmins() *AdminEnforcement {
 	return p.EnforceAdmins
 }
 
+// GetRequiredConversationResolution returns the RequiredConversationResolution field.
+func (p *Protection) GetRequiredConversationResolution() *RequiredConversationResolution {
+	if p == nil {
+		return nil
+	}
+	return p.RequiredConversationResolution
+}
+
 // GetRequiredPullRequestReviews returns the RequiredPullRequestReviews field.
 func (p *Protection) GetRequiredPullRequestReviews() *PullRequestReviewsEnforcement {
 	if p == nil {
@@ -9738,6 +10362,14 @@ func (p *ProtectionRequest) GetAllowForcePushes() bool {
 		return false
 	}
 	return *p.AllowForcePushes
+}
+
+// GetRequiredConversationResolution returns the RequiredConversationResolution field if it's non-nil, zero value otherwise.
+func (p *ProtectionRequest) GetRequiredConversationResolution() bool {
+	if p == nil || p.RequiredConversationResolution == nil {
+		return false
+	}
+	return *p.RequiredConversationResolution
 }
 
 // GetRequiredPullRequestReviews returns the RequiredPullRequestReviews field.
@@ -9874,6 +10506,14 @@ func (p *PullRequest) GetAuthorAssociation() string {
 		return ""
 	}
 	return *p.AuthorAssociation
+}
+
+// GetAutoMerge returns the AutoMerge field.
+func (p *PullRequest) GetAutoMerge() *PullRequestAutoMerge {
+	if p == nil {
+		return nil
+	}
+	return p.AutoMerge
 }
 
 // GetBase returns the Base field.
@@ -10186,6 +10826,38 @@ func (p *PullRequest) GetUser() *User {
 		return nil
 	}
 	return p.User
+}
+
+// GetCommitMessage returns the CommitMessage field if it's non-nil, zero value otherwise.
+func (p *PullRequestAutoMerge) GetCommitMessage() string {
+	if p == nil || p.CommitMessage == nil {
+		return ""
+	}
+	return *p.CommitMessage
+}
+
+// GetCommitTitle returns the CommitTitle field if it's non-nil, zero value otherwise.
+func (p *PullRequestAutoMerge) GetCommitTitle() string {
+	if p == nil || p.CommitTitle == nil {
+		return ""
+	}
+	return *p.CommitTitle
+}
+
+// GetEnabledBy returns the EnabledBy field.
+func (p *PullRequestAutoMerge) GetEnabledBy() *User {
+	if p == nil {
+		return nil
+	}
+	return p.EnabledBy
+}
+
+// GetMergeMethod returns the MergeMethod field if it's non-nil, zero value otherwise.
+func (p *PullRequestAutoMerge) GetMergeMethod() string {
+	if p == nil || p.MergeMethod == nil {
+		return ""
+	}
+	return *p.MergeMethod
 }
 
 // GetLabel returns the Label field if it's non-nil, zero value otherwise.
@@ -12364,6 +13036,14 @@ func (r *Repository) GetNotificationsURL() string {
 	return *r.NotificationsURL
 }
 
+// GetOpenIssues returns the OpenIssues field if it's non-nil, zero value otherwise.
+func (r *Repository) GetOpenIssues() int {
+	if r == nil || r.OpenIssues == nil {
+		return 0
+	}
+	return *r.OpenIssues
+}
+
 // GetOpenIssuesCount returns the OpenIssuesCount field if it's non-nil, zero value otherwise.
 func (r *Repository) GetOpenIssuesCount() int {
 	if r == nil || r.OpenIssuesCount == nil {
@@ -12396,12 +13076,12 @@ func (r *Repository) GetParent() *Repository {
 	return r.Parent
 }
 
-// GetPermissions returns the Permissions field if it's non-nil, zero value otherwise.
+// GetPermissions returns the Permissions map if it's non-nil, an empty map otherwise.
 func (r *Repository) GetPermissions() map[string]bool {
 	if r == nil || r.Permissions == nil {
 		return map[string]bool{}
 	}
-	return *r.Permissions
+	return r.Permissions
 }
 
 // GetPrivate returns the Private field if it's non-nil, zero value otherwise.
@@ -12578,6 +13258,14 @@ func (r *Repository) GetVisibility() string {
 		return ""
 	}
 	return *r.Visibility
+}
+
+// GetWatchers returns the Watchers field if it's non-nil, zero value otherwise.
+func (r *Repository) GetWatchers() int {
+	if r == nil || r.Watchers == nil {
+		return 0
+	}
+	return *r.Watchers
 }
 
 // GetWatchersCount returns the WatchersCount field if it's non-nil, zero value otherwise.
@@ -13356,12 +14044,116 @@ func (r *RepositoryTag) GetZipballURL() string {
 	return *r.ZipballURL
 }
 
+// GetAffectedPackageName returns the AffectedPackageName field if it's non-nil, zero value otherwise.
+func (r *RepositoryVulnerabilityAlert) GetAffectedPackageName() string {
+	if r == nil || r.AffectedPackageName == nil {
+		return ""
+	}
+	return *r.AffectedPackageName
+}
+
+// GetAffectedRange returns the AffectedRange field if it's non-nil, zero value otherwise.
+func (r *RepositoryVulnerabilityAlert) GetAffectedRange() string {
+	if r == nil || r.AffectedRange == nil {
+		return ""
+	}
+	return *r.AffectedRange
+}
+
+// GetCreatedAt returns the CreatedAt field if it's non-nil, zero value otherwise.
+func (r *RepositoryVulnerabilityAlert) GetCreatedAt() Timestamp {
+	if r == nil || r.CreatedAt == nil {
+		return Timestamp{}
+	}
+	return *r.CreatedAt
+}
+
+// GetDismissedAt returns the DismissedAt field if it's non-nil, zero value otherwise.
+func (r *RepositoryVulnerabilityAlert) GetDismissedAt() Timestamp {
+	if r == nil || r.DismissedAt == nil {
+		return Timestamp{}
+	}
+	return *r.DismissedAt
+}
+
+// GetDismisser returns the Dismisser field.
+func (r *RepositoryVulnerabilityAlert) GetDismisser() *User {
+	if r == nil {
+		return nil
+	}
+	return r.Dismisser
+}
+
+// GetDismissReason returns the DismissReason field if it's non-nil, zero value otherwise.
+func (r *RepositoryVulnerabilityAlert) GetDismissReason() string {
+	if r == nil || r.DismissReason == nil {
+		return ""
+	}
+	return *r.DismissReason
+}
+
+// GetExternalIdentifier returns the ExternalIdentifier field if it's non-nil, zero value otherwise.
+func (r *RepositoryVulnerabilityAlert) GetExternalIdentifier() string {
+	if r == nil || r.ExternalIdentifier == nil {
+		return ""
+	}
+	return *r.ExternalIdentifier
+}
+
+// GetExternalReference returns the ExternalReference field if it's non-nil, zero value otherwise.
+func (r *RepositoryVulnerabilityAlert) GetExternalReference() string {
+	if r == nil || r.ExternalReference == nil {
+		return ""
+	}
+	return *r.ExternalReference
+}
+
+// GetFixedIn returns the FixedIn field if it's non-nil, zero value otherwise.
+func (r *RepositoryVulnerabilityAlert) GetFixedIn() string {
+	if r == nil || r.FixedIn == nil {
+		return ""
+	}
+	return *r.FixedIn
+}
+
+// GetGitHubSecurityAdvisoryID returns the GitHubSecurityAdvisoryID field if it's non-nil, zero value otherwise.
+func (r *RepositoryVulnerabilityAlert) GetGitHubSecurityAdvisoryID() string {
+	if r == nil || r.GitHubSecurityAdvisoryID == nil {
+		return ""
+	}
+	return *r.GitHubSecurityAdvisoryID
+}
+
+// GetID returns the ID field if it's non-nil, zero value otherwise.
+func (r *RepositoryVulnerabilityAlert) GetID() int64 {
+	if r == nil || r.ID == nil {
+		return 0
+	}
+	return *r.ID
+}
+
+// GetSeverity returns the Severity field if it's non-nil, zero value otherwise.
+func (r *RepositoryVulnerabilityAlert) GetSeverity() string {
+	if r == nil || r.Severity == nil {
+		return ""
+	}
+	return *r.Severity
+}
+
 // GetAction returns the Action field if it's non-nil, zero value otherwise.
 func (r *RepositoryVulnerabilityAlertEvent) GetAction() string {
 	if r == nil || r.Action == nil {
 		return ""
 	}
 	return *r.Action
+}
+
+// GetAlert returns the Alert field.
+func (r *RepositoryVulnerabilityAlertEvent) GetAlert() *RepositoryVulnerabilityAlert {
+	if r == nil {
+		return nil
+	}
+	return r.Alert
 }
 
 // GetRepository returns the Repository field.
@@ -13524,6 +14316,54 @@ func (r *ReviewersRequest) GetNodeID() string {
 	return *r.NodeID
 }
 
+// GetDescription returns the Description field if it's non-nil, zero value otherwise.
+func (r *Rule) GetDescription() string {
+	if r == nil || r.Description == nil {
+		return ""
+	}
+	return *r.Description
+}
+
+// GetFullDescription returns the FullDescription field if it's non-nil, zero value otherwise.
+func (r *Rule) GetFullDescription() string {
+	if r == nil || r.FullDescription == nil {
+		return ""
+	}
+	return *r.FullDescription
+}
+
+// GetHelp returns the Help field if it's non-nil, zero value otherwise.
+func (r *Rule) GetHelp() string {
+	if r == nil || r.Help == nil {
+		return ""
+	}
+	return *r.Help
+}
+
+// GetID returns the ID field if it's non-nil, zero value otherwise.
+func (r *Rule) GetID() string {
+	if r == nil || r.ID == nil {
+		return ""
+	}
+	return *r.ID
+}
+
+// GetName returns the Name field if it's non-nil, zero value otherwise.
+func (r *Rule) GetName() string {
+	if r == nil || r.Name == nil {
+		return ""
+	}
+	return *r.Name
+}
+
+// GetSeverity returns the Severity field if it's non-nil, zero value otherwise.
+func (r *Rule) GetSeverity() string {
+	if r == nil || r.Severity == nil {
+		return ""
+	}
+	return *r.Severity
+}
+
 // GetBusy returns the Busy field if it's non-nil, zero value otherwise.
 func (r *Runner) GetBusy() bool {
 	if r == nil || r.Busy == nil {
@@ -13594,6 +14434,22 @@ func (r *RunnerApplicationDownload) GetOS() string {
 		return ""
 	}
 	return *r.OS
+}
+
+// GetSHA256Checksum returns the SHA256Checksum field if it's non-nil, zero value otherwise.
+func (r *RunnerApplicationDownload) GetSHA256Checksum() string {
+	if r == nil || r.SHA256Checksum == nil {
+		return ""
+	}
+	return *r.SHA256Checksum
+}
+
+// GetTempDownloadToken returns the TempDownloadToken field if it's non-nil, zero value otherwise.
+func (r *RunnerApplicationDownload) GetTempDownloadToken() string {
+	if r == nil || r.TempDownloadToken == nil {
+		return ""
+	}
+	return *r.TempDownloadToken
 }
 
 // GetAllowsPublicRepositories returns the AllowsPublicRepositories field if it's non-nil, zero value otherwise.
@@ -13850,6 +14706,30 @@ func (s *StarEvent) GetAction() string {
 		return ""
 	}
 	return *s.Action
+}
+
+// GetOrg returns the Org field.
+func (s *StarEvent) GetOrg() *Organization {
+	if s == nil {
+		return nil
+	}
+	return s.Org
+}
+
+// GetRepo returns the Repo field.
+func (s *StarEvent) GetRepo() *Repository {
+	if s == nil {
+		return nil
+	}
+	return s.Repo
+}
+
+// GetSender returns the Sender field.
+func (s *StarEvent) GetSender() *User {
+	if s == nil {
+		return nil
+	}
+	return s.Sender
 }
 
 // GetStarredAt returns the StarredAt field if it's non-nil, zero value otherwise.
@@ -14244,6 +15124,14 @@ func (t *Team) GetPermission() string {
 	return *t.Permission
 }
 
+// GetPermissions returns the Permissions map if it's non-nil, an empty map otherwise.
+func (t *Team) GetPermissions() map[string]bool {
+	if t == nil || t.Permissions == nil {
+		return map[string]bool{}
+	}
+	return t.Permissions
+}
+
 // GetPrivacy returns the Privacy field if it's non-nil, zero value otherwise.
 func (t *Team) GetPrivacy() string {
 	if t == nil || t.Privacy == nil {
@@ -14322,6 +15210,46 @@ func (t *TeamAddEvent) GetTeam() *Team {
 		return nil
 	}
 	return t.Team
+}
+
+// GetDescription returns the Description field.
+func (t *TeamChange) GetDescription() *TeamDescription {
+	if t == nil {
+		return nil
+	}
+	return t.Description
+}
+
+// GetName returns the Name field.
+func (t *TeamChange) GetName() *TeamName {
+	if t == nil {
+		return nil
+	}
+	return t.Name
+}
+
+// GetPrivacy returns the Privacy field.
+func (t *TeamChange) GetPrivacy() *TeamPrivacy {
+	if t == nil {
+		return nil
+	}
+	return t.Privacy
+}
+
+// GetRepository returns the Repository field.
+func (t *TeamChange) GetRepository() *TeamRepository {
+	if t == nil {
+		return nil
+	}
+	return t.Repository
+}
+
+// GetFrom returns the From field if it's non-nil, zero value otherwise.
+func (t *TeamDescription) GetFrom() string {
+	if t == nil || t.From == nil {
+		return ""
+	}
+	return *t.From
 }
 
 // GetAuthor returns the Author field.
@@ -14604,6 +15532,54 @@ func (t *TeamLDAPMapping) GetURL() string {
 	return *t.URL
 }
 
+// GetFrom returns the From field if it's non-nil, zero value otherwise.
+func (t *TeamName) GetFrom() string {
+	if t == nil || t.From == nil {
+		return ""
+	}
+	return *t.From
+}
+
+// GetFrom returns the From field.
+func (t *TeamPermissions) GetFrom() *TeamPermissionsFrom {
+	if t == nil {
+		return nil
+	}
+	return t.From
+}
+
+// GetAdmin returns the Admin field if it's non-nil, zero value otherwise.
+func (t *TeamPermissionsFrom) GetAdmin() bool {
+	if t == nil || t.Admin == nil {
+		return false
+	}
+	return *t.Admin
+}
+
+// GetPull returns the Pull field if it's non-nil, zero value otherwise.
+func (t *TeamPermissionsFrom) GetPull() bool {
+	if t == nil || t.Pull == nil {
+		return false
+	}
+	return *t.Pull
+}
+
+// GetPush returns the Push field if it's non-nil, zero value otherwise.
+func (t *TeamPermissionsFrom) GetPush() bool {
+	if t == nil || t.Push == nil {
+		return false
+	}
+	return *t.Push
+}
+
+// GetFrom returns the From field if it's non-nil, zero value otherwise.
+func (t *TeamPrivacy) GetFrom() string {
+	if t == nil || t.From == nil {
+		return ""
+	}
+	return *t.From
+}
+
 // GetPermission returns the Permission field if it's non-nil, zero value otherwise.
 func (t *TeamProjectOptions) GetPermission() string {
 	if t == nil || t.Permission == nil {
@@ -14612,12 +15588,28 @@ func (t *TeamProjectOptions) GetPermission() string {
 	return *t.Permission
 }
 
+// GetPermissions returns the Permissions field.
+func (t *TeamRepository) GetPermissions() *TeamPermissions {
+	if t == nil {
+		return nil
+	}
+	return t.Permissions
+}
+
 // GetDescription returns the Description field if it's non-nil, zero value otherwise.
 func (t *TemplateRepoRequest) GetDescription() string {
 	if t == nil || t.Description == nil {
 		return ""
 	}
 	return *t.Description
+}
+
+// GetIncludeAllBranches returns the IncludeAllBranches field if it's non-nil, zero value otherwise.
+func (t *TemplateRepoRequest) GetIncludeAllBranches() bool {
+	if t == nil || t.IncludeAllBranches == nil {
+		return false
+	}
+	return *t.IncludeAllBranches
 }
 
 // GetName returns the Name field if it's non-nil, zero value otherwise.
@@ -14772,12 +15764,44 @@ func (t *Timeline) GetSource() *Source {
 	return t.Source
 }
 
+// GetState returns the State field if it's non-nil, zero value otherwise.
+func (t *Timeline) GetState() string {
+	if t == nil || t.State == nil {
+		return ""
+	}
+	return *t.State
+}
+
 // GetURL returns the URL field if it's non-nil, zero value otherwise.
 func (t *Timeline) GetURL() string {
 	if t == nil || t.URL == nil {
 		return ""
 	}
 	return *t.URL
+}
+
+// GetGUID returns the GUID field if it's non-nil, zero value otherwise.
+func (t *Tool) GetGUID() string {
+	if t == nil || t.GUID == nil {
+		return ""
+	}
+	return *t.GUID
+}
+
+// GetName returns the Name field if it's non-nil, zero value otherwise.
+func (t *Tool) GetName() string {
+	if t == nil || t.Name == nil {
+		return ""
+	}
+	return *t.Name
+}
+
+// GetVersion returns the Version field if it's non-nil, zero value otherwise.
+func (t *Tool) GetVersion() string {
+	if t == nil || t.Version == nil {
+		return ""
+	}
+	return *t.Version
 }
 
 // GetCreatedAt returns the CreatedAt field if it's non-nil, zero value otherwise.
@@ -15108,6 +16132,14 @@ func (u *UpdateCheckRunOptions) GetStatus() string {
 	return *u.Status
 }
 
+// GetAllowsPublicRepositories returns the AllowsPublicRepositories field if it's non-nil, zero value otherwise.
+func (u *UpdateRunnerGroupRequest) GetAllowsPublicRepositories() bool {
+	if u == nil || u.AllowsPublicRepositories == nil {
+		return false
+	}
+	return *u.AllowsPublicRepositories
+}
+
 // GetName returns the Name field if it's non-nil, zero value otherwise.
 func (u *UpdateRunnerGroupRequest) GetName() string {
 	if u == nil || u.Name == nil {
@@ -15324,12 +16356,12 @@ func (u *User) GetOwnedPrivateRepos() int {
 	return *u.OwnedPrivateRepos
 }
 
-// GetPermissions returns the Permissions field if it's non-nil, zero value otherwise.
+// GetPermissions returns the Permissions map if it's non-nil, an empty map otherwise.
 func (u *User) GetPermissions() map[string]bool {
 	if u == nil || u.Permissions == nil {
 		return map[string]bool{}
 	}
-	return *u.Permissions
+	return u.Permissions
 }
 
 // GetPlan returns the Plan field.

@@ -9,9 +9,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"reflect"
 	"testing"
 	"time"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestRepositoriesService_GetCommunityHealthMetrics(t *testing.T) {
@@ -81,7 +82,7 @@ func TestRepositoriesService_GetCommunityHealthMetrics(t *testing.T) {
 			},
 		},
 	}
-	if !reflect.DeepEqual(got, want) {
+	if !cmp.Equal(got, want) {
 		t.Errorf("Repositories.GetCommunityHealthMetrics:\ngot:\n%v\nwant:\n%v", Stringify(got), Stringify(want))
 	}
 
@@ -98,4 +99,200 @@ func TestRepositoriesService_GetCommunityHealthMetrics(t *testing.T) {
 		}
 		return resp, err
 	})
+}
+
+func TestMetric_Marshal(t *testing.T) {
+	testJSONMarshal(t, &Metric{}, "{}")
+
+	r := &Metric{
+		Name:    String("name"),
+		Key:     String("key"),
+		URL:     String("url"),
+		HTMLURL: String("hurl"),
+	}
+
+	want := `{
+		"name": "name",
+		"key": "key",
+		"url": "url",
+		"html_url": "hurl"
+	}`
+
+	testJSONMarshal(t, r, want)
+}
+
+func TestCommunityHealthFiles_Marshal(t *testing.T) {
+	testJSONMarshal(t, &CommunityHealthFiles{}, "{}")
+
+	r := &CommunityHealthFiles{
+		CodeOfConduct: &Metric{
+			Name:    String("name"),
+			Key:     String("key"),
+			URL:     String("url"),
+			HTMLURL: String("hurl"),
+		},
+		Contributing: &Metric{
+			Name:    String("name"),
+			Key:     String("key"),
+			URL:     String("url"),
+			HTMLURL: String("hurl"),
+		},
+		IssueTemplate: &Metric{
+			Name:    String("name"),
+			Key:     String("key"),
+			URL:     String("url"),
+			HTMLURL: String("hurl"),
+		},
+		PullRequestTemplate: &Metric{
+			Name:    String("name"),
+			Key:     String("key"),
+			URL:     String("url"),
+			HTMLURL: String("hurl"),
+		},
+		License: &Metric{
+			Name:    String("name"),
+			Key:     String("key"),
+			URL:     String("url"),
+			HTMLURL: String("hurl"),
+		},
+		Readme: &Metric{
+			Name:    String("name"),
+			Key:     String("key"),
+			URL:     String("url"),
+			HTMLURL: String("hurl"),
+		},
+	}
+
+	want := `{
+		"code_of_conduct": {
+			"name": "name",
+			"key": "key",
+			"url": "url",
+			"html_url": "hurl"
+		},
+		"contributing": {
+			"name": "name",
+			"key": "key",
+			"url": "url",
+			"html_url": "hurl"
+		},
+		"issue_template": {
+			"name": "name",
+			"key": "key",
+			"url": "url",
+			"html_url": "hurl"
+		},
+		"pull_request_template": {
+			"name": "name",
+			"key": "key",
+			"url": "url",
+			"html_url": "hurl"
+		},
+		"license": {
+			"name": "name",
+			"key": "key",
+			"url": "url",
+			"html_url": "hurl"
+		},
+		"readme": {
+			"name": "name",
+			"key": "key",
+			"url": "url",
+			"html_url": "hurl"
+		}
+	}`
+
+	testJSONMarshal(t, r, want)
+}
+
+func TestCommunityHealthMetrics_Marshal(t *testing.T) {
+	testJSONMarshal(t, &CommunityHealthMetrics{}, "{}")
+
+	r := &CommunityHealthMetrics{
+		HealthPercentage: Int(1),
+		Files: &CommunityHealthFiles{
+			CodeOfConduct: &Metric{
+				Name:    String("name"),
+				Key:     String("key"),
+				URL:     String("url"),
+				HTMLURL: String("hurl"),
+			},
+			Contributing: &Metric{
+				Name:    String("name"),
+				Key:     String("key"),
+				URL:     String("url"),
+				HTMLURL: String("hurl"),
+			},
+			IssueTemplate: &Metric{
+				Name:    String("name"),
+				Key:     String("key"),
+				URL:     String("url"),
+				HTMLURL: String("hurl"),
+			},
+			PullRequestTemplate: &Metric{
+				Name:    String("name"),
+				Key:     String("key"),
+				URL:     String("url"),
+				HTMLURL: String("hurl"),
+			},
+			License: &Metric{
+				Name:    String("name"),
+				Key:     String("key"),
+				URL:     String("url"),
+				HTMLURL: String("hurl"),
+			},
+			Readme: &Metric{
+				Name:    String("name"),
+				Key:     String("key"),
+				URL:     String("url"),
+				HTMLURL: String("hurl"),
+			},
+		},
+		UpdatedAt: &referenceTime,
+	}
+
+	want := `{
+		"health_percentage": 1,
+		"files": {
+			"code_of_conduct": {
+				"name": "name",
+				"key": "key",
+				"url": "url",
+				"html_url": "hurl"
+			},
+			"contributing": {
+				"name": "name",
+				"key": "key",
+				"url": "url",
+				"html_url": "hurl"
+			},
+			"issue_template": {
+				"name": "name",
+				"key": "key",
+				"url": "url",
+				"html_url": "hurl"
+			},
+			"pull_request_template": {
+				"name": "name",
+				"key": "key",
+				"url": "url",
+				"html_url": "hurl"
+			},
+			"license": {
+				"name": "name",
+				"key": "key",
+				"url": "url",
+				"html_url": "hurl"
+			},
+			"readme": {
+				"name": "name",
+				"key": "key",
+				"url": "url",
+				"html_url": "hurl"
+			}
+		},
+		"updated_at": ` + referenceTimeStr + `
+	}`
+
+	testJSONMarshal(t, r, want)
 }

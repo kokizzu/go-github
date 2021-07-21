@@ -10,8 +10,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"reflect"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestOrganizationsService_GetActionsAllowed(t *testing.T) {
@@ -29,7 +30,7 @@ func TestOrganizationsService_GetActionsAllowed(t *testing.T) {
 		t.Errorf("Organizations.GetActionsAllowed returned error: %v", err)
 	}
 	want := &ActionsAllowed{GithubOwnedAllowed: Bool(true), VerifiedAllowed: Bool(false), PatternsAllowed: []string{"a/b"}}
-	if !reflect.DeepEqual(org, want) {
+	if !cmp.Equal(org, want) {
 		t.Errorf("Organizations.GetActionsAllowed returned %+v, want %+v", org, want)
 	}
 
@@ -58,7 +59,7 @@ func TestOrganizationsService_EditActionsAllowed(t *testing.T) {
 		json.NewDecoder(r.Body).Decode(v)
 
 		testMethod(t, r, "PUT")
-		if !reflect.DeepEqual(v, input) {
+		if !cmp.Equal(v, input) {
 			t.Errorf("Request body = %+v, want %+v", v, input)
 		}
 
@@ -72,7 +73,7 @@ func TestOrganizationsService_EditActionsAllowed(t *testing.T) {
 	}
 
 	want := &ActionsAllowed{GithubOwnedAllowed: Bool(true), VerifiedAllowed: Bool(false), PatternsAllowed: []string{"a/b"}}
-	if !reflect.DeepEqual(org, want) {
+	if !cmp.Equal(org, want) {
 		t.Errorf("Organizations.EditActionsAllowed returned %+v, want %+v", org, want)
 	}
 
@@ -81,4 +82,42 @@ func TestOrganizationsService_EditActionsAllowed(t *testing.T) {
 		_, _, err = client.Organizations.EditActionsAllowed(ctx, "\n", *input)
 		return err
 	})
+}
+
+func TestActionsAllowed_Marshal(t *testing.T) {
+	testJSONMarshal(t, &ActionsAllowed{}, "{}")
+
+	u := &ActionsAllowed{
+		GithubOwnedAllowed: Bool(false),
+		VerifiedAllowed:    Bool(false),
+		PatternsAllowed:    []string{"s"},
+	}
+
+	want := `{
+		"github_owned_allowed": false,
+		"verified_allowed": false,
+		"patterns_allowed": [
+			"s"
+		]
+	}`
+
+	testJSONMarshal(t, u, want)
+}
+
+func TestActionsPermissions_Marshal(t *testing.T) {
+	testJSONMarshal(t, &ActionsPermissions{}, "{}")
+
+	u := &ActionsPermissions{
+		EnabledRepositories: String("e"),
+		AllowedActions:      String("a"),
+		SelectedActionsURL:  String("sau"),
+	}
+
+	want := `{
+		"enabled_repositories": "e",
+		"allowed_actions": "a",
+		"selected_actions_url": "sau"
+	}`
+
+	testJSONMarshal(t, u, want)
 }

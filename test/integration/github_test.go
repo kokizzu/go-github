@@ -3,6 +3,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build integration
 // +build integration
 
 package integration
@@ -14,7 +15,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/google/go-github/v35/github"
+	"github.com/google/go-github/v37/github"
 	"golang.org/x/oauth2"
 )
 
