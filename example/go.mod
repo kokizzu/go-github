@@ -9,7 +9,7 @@ require (
 	github.com/gofri/go-github-ratelimit/v2 v2.0.2
 	github.com/google/go-github/otel/v91 v91.0.0
 	github.com/google/go-github/v91 v91.0.0
-	github.com/sigstore/sigstore-go v1.2.2
+	github.com/sigstore/sigstore-go v1.3.0
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.46.0
 	go.opentelemetry.io/otel/sdk v1.46.0
 	golang.org/x/crypto v0.55.0
@@ -27,28 +27,29 @@ require (
 	github.com/digitorus/timestamp v0.0.0-20231217203849-220c5c2851b7 // indirect
 	github.com/go-logr/logr v1.4.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
-	github.com/go-openapi/analysis v0.25.2 // indirect
+	github.com/go-openapi/analysis v0.25.5 // indirect
 	github.com/go-openapi/errors v0.22.8 // indirect
-	github.com/go-openapi/jsonpointer v0.23.1 // indirect
-	github.com/go-openapi/jsonreference v0.21.6 // indirect
-	github.com/go-openapi/loads v0.24.0 // indirect
-	github.com/go-openapi/runtime v0.32.4 // indirect
+	github.com/go-openapi/jsonpointer v1.0.0 // indirect
+	github.com/go-openapi/jsonreference v1.0.0 // indirect
+	github.com/go-openapi/loads v0.25.0 // indirect
+	github.com/go-openapi/runtime v0.33.0 // indirect
 	github.com/go-openapi/runtime/server-middleware v0.30.0 // indirect
-	github.com/go-openapi/spec v0.22.6 // indirect
-	github.com/go-openapi/strfmt v0.26.4 // indirect
+	github.com/go-openapi/spec v0.22.9 // indirect
+	github.com/go-openapi/strfmt v0.27.0 // indirect
 	github.com/go-openapi/swag v0.26.1 // indirect
-	github.com/go-openapi/swag/cmdutils v0.26.1 // indirect
-	github.com/go-openapi/swag/conv v0.27.0 // indirect
-	github.com/go-openapi/swag/fileutils v0.26.1 // indirect
+	github.com/go-openapi/swag/cmdutils v0.27.0 // indirect
+	github.com/go-openapi/swag/conv v0.27.3 // indirect
+	github.com/go-openapi/swag/fileutils v0.27.3 // indirect
 	github.com/go-openapi/swag/jsonname v0.26.1 // indirect
-	github.com/go-openapi/swag/jsonutils v0.26.1 // indirect
-	github.com/go-openapi/swag/loading v0.26.1 // indirect
-	github.com/go-openapi/swag/mangling v0.26.1 // indirect
-	github.com/go-openapi/swag/netutils v0.26.1 // indirect
-	github.com/go-openapi/swag/stringutils v0.26.1 // indirect
-	github.com/go-openapi/swag/typeutils v0.27.0 // indirect
-	github.com/go-openapi/swag/yamlutils v0.26.1 // indirect
-	github.com/go-openapi/validate v0.26.0 // indirect
+	github.com/go-openapi/swag/jsonutils v0.27.3 // indirect
+	github.com/go-openapi/swag/loading v0.27.3 // indirect
+	github.com/go-openapi/swag/mangling v0.27.3 // indirect
+	github.com/go-openapi/swag/netutils v0.27.0 // indirect
+	github.com/go-openapi/swag/pools v0.27.3 // indirect
+	github.com/go-openapi/swag/stringutils v0.27.3 // indirect
+	github.com/go-openapi/swag/typeutils v0.27.3 // indirect
+	github.com/go-openapi/swag/yamlutils v0.27.3 // indirect
+	github.com/go-openapi/validate v0.26.1 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.2 // indirect
 	github.com/google/certificate-transparency-go v1.3.3 // indirect
@@ -68,7 +69,7 @@ require (
 	github.com/sigstore/rekor v1.5.3 // indirect
 	github.com/sigstore/rekor-tiles/v2 v2.3.0 // indirect
 	github.com/sigstore/sigstore v1.10.8 // indirect
-	github.com/sigstore/timestamp-authority/v2 v2.1.2 // indirect
+	github.com/sigstore/timestamp-authority/v2 v2.1.3 // indirect
 	github.com/theupdateframework/go-tuf/v2 v2.4.2 // indirect
 	github.com/transparency-dev/formats v0.1.1 // indirect
 	github.com/transparency-dev/merkle v0.0.2 // indirect
